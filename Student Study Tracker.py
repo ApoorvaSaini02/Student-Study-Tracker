@@ -15,9 +15,7 @@ records = []
 # ------------------------------------------
 # Load data from file
 # ------------------------------------------
-
 def load_data():
-
     global records
 
     records = []
@@ -27,9 +25,7 @@ def load_data():
         reader = csv.reader(file)
 
         for data in reader:
-
             if len(data) == 6:
-
                 record = {
                     "date": data[0],
                     "subject": data[1],
@@ -44,7 +40,6 @@ def load_data():
         file.close()
 
     except FileNotFoundError:
-
         file = open(FILE_NAME, "w", newline="")
         file.close()
 
@@ -52,14 +47,11 @@ def load_data():
 # ------------------------------------------
 # Save data
 # ------------------------------------------
-
 def save_data():
-
     file = open(FILE_NAME, "w", newline="")
     writer = csv.writer(file)
 
     for r in records:
-
         writer.writerow([
             r["date"],
             r["subject"],
@@ -75,9 +67,7 @@ def save_data():
 # ------------------------------------------
 # Calculate study hours
 # ------------------------------------------
-
 def calculate_hours(start, end):
-
     start_time = datetime.datetime.strptime(
         start,
         "%H:%M"
@@ -89,7 +79,6 @@ def calculate_hours(start, end):
     )
 
     difference = end_time - start_time
-
     hours = difference.seconds / 3600
 
     return round(hours, 2)
@@ -98,39 +87,30 @@ def calculate_hours(start, end):
 # ------------------------------------------
 # Add Study Session
 # ------------------------------------------
-
 def add_record():
-
     print("\n------ ADD STUDY SESSION ------")
 
     date = input("Date (DD-MM-YYYY): ")
-
     subject = input("Subject: ")
 
     while True:
-
         start = input("Start Time (HH:MM): ")
 
         try:
-
             datetime.datetime.strptime(start, "%H:%M")
             break
 
         except ValueError:
-
             print("Invalid time! Please enter time in HH:MM format.")
 
     while True:
-
         end = input("End Time (HH:MM): ")
 
         try:
-
             datetime.datetime.strptime(end, "%H:%M")
             break
 
         except ValueError:
-
             print("Invalid time! Please enter time in HH:MM format.")
 
     note = input("What did you study today?: ")
@@ -147,7 +127,6 @@ def add_record():
     }
 
     records.append(record)
-
     save_data()
 
     print("\nSession Saved!")
@@ -157,13 +136,10 @@ def add_record():
 # ------------------------------------------
 # View Records
 # ------------------------------------------
-
 def view_records():
-
     print("\n========== STUDY HISTORY ==========")
 
     if len(records) == 0:
-
         print("No records found")
         return
 
@@ -185,7 +161,6 @@ def view_records():
     count = 1
 
     for r in records:
-
         print(
             "{:<5}{:<15}{:<18}{:<10}{:<10}{:<10}".format(
                 count,
@@ -205,17 +180,13 @@ def view_records():
 # ------------------------------------------
 # Search Subject
 # ------------------------------------------
-
 def search_subject():
-
     name = input("\nEnter subject name: ")
 
     found = False
 
     for r in records:
-
         if r["subject"].lower() == name.lower():
-
             print("\nDate:", r["date"])
             print("Start:", r["start"])
             print("End:", r["end"])
@@ -225,33 +196,26 @@ def search_subject():
             found = True
 
     if found == False:
-
         print("No record found")
 
 
 # ------------------------------------------
 # Delete Study Session
 # ------------------------------------------
-
 def delete_record():
-
     view_records()
 
     if len(records) == 0:
-
         return
 
     try:
-
         number = int(input("\nEnter record number to delete: "))
 
         if number < 1 or number > len(records):
-
             print("Invalid record number!")
             return
 
         deleted = records.pop(number - 1)
-
         save_data()
 
         print("\nRecord Deleted Successfully!")
@@ -259,20 +223,16 @@ def delete_record():
         print("Deleted Hours:", deleted["hours"])
 
     except ValueError:
-
         print("Please enter a valid number.")
 
 
 # ------------------------------------------
 # Total Study Hours
 # ------------------------------------------
-
 def total_hours():
-
     total = 0
 
     for r in records:
-
         total = total + r["hours"]
 
     print("\nTotal Study Time:")
@@ -282,18 +242,14 @@ def total_hours():
 # ------------------------------------------
 # Average Study Hours
 # ------------------------------------------
-
 def average_hours():
-
     if len(records) == 0:
-
         print("No data")
         return
 
     total = 0
 
     for r in records:
-
         total = total + r["hours"]
 
     average = total / len(records)
@@ -305,30 +261,22 @@ def average_hours():
 # ------------------------------------------
 # Most Studied Subject
 # ------------------------------------------
-
 def best_subject():
-
     subjects = {}
 
     for r in records:
-
         name = r["subject"]
 
         if name in subjects:
-
             subjects[name] = subjects[name] + r["hours"]
-
         else:
-
             subjects[name] = r["hours"]
 
     highest = ""
     maximum = 0
 
     for s in subjects:
-
         if subjects[s] > maximum:
-
             maximum = subjects[s]
             highest = s
 
@@ -340,72 +288,60 @@ def best_subject():
 # ------------------------------------------
 # Weekly Goal Tracker
 # ------------------------------------------
-
 def goal_tracker():
-
     goal = float(input("\nEnter weekly goal hours: "))
 
-    today = datetime.datetime.today()
+    if goal <= 0:
+        print("Goal must be greater than 0.")
+        return
 
+    today = datetime.datetime.today()
     monday = today - datetime.timedelta(days=today.weekday())
 
     total = 0
 
     for r in records:
-
         record_date = datetime.datetime.strptime(
             r["date"],
             "%d-%m-%Y"
         )
 
         if monday.date() <= record_date.date() <= today.date():
-
             total = total + r["hours"]
 
     percentage = (total / goal) * 100
 
     print("\nWeekly Goal Progress")
     print("----------------------")
-
     print("Completed:", round(total, 2), "hours")
     print("Goal:", goal, "hours")
     print("Progress:", round(percentage, 2), "%")
 
     if percentage >= 100:
-
         print("Goal Completed!")
 
     elif percentage >= 70:
-
         print("Almost there!")
 
     else:
-
         print("Keep improving!")
 
 
 # ------------------------------------------
 # Subject Graph
 # ------------------------------------------
-
 def subject_graph():
-
     subjects = {}
 
     for r in records:
-
         name = r["subject"]
 
         if name in subjects:
-
             subjects[name] = subjects[name] + r["hours"]
-
         else:
-
             subjects[name] = r["hours"]
 
     if len(subjects) == 0:
-
         print("No data available for graph.")
         return
 
@@ -413,7 +349,6 @@ def subject_graph():
     hours = []
 
     for s in subjects:
-
         names.append(s)
         hours.append(subjects[s])
 
@@ -426,7 +361,6 @@ def subject_graph():
     plt.xticks(rotation=45)
 
     for i in range(len(hours)):
-
         plt.text(
             i,
             hours[i],
@@ -435,23 +369,19 @@ def subject_graph():
         )
 
     plt.tight_layout()
-
     plt.show()
 
 
 # ------------------------------------------
 # Start Program
 # ------------------------------------------
-
 load_data()
 
 
 # ------------------------------------------
 # Final Menu
 # ------------------------------------------
-
 while True:
-
     print("\n================================")
     print(" SMART STUDY TIME TRACKER")
     print("================================")
@@ -470,46 +400,35 @@ while True:
     choice = input("\nEnter choice: ")
 
     if choice == "1":
-
         add_record()
 
     elif choice == "2":
-
         view_records()
 
     elif choice == "3":
-
         search_subject()
 
     elif choice == "4":
-
         total_hours()
 
     elif choice == "5":
-
         average_hours()
 
     elif choice == "6":
-
         best_subject()
 
     elif choice == "7":
-
         goal_tracker()
 
     elif choice == "8":
-
         subject_graph()
 
     elif choice == "9":
-
         delete_record()
 
     elif choice == "10":
-
         print("\nThank you for using Smart Study Tracker")
         break
 
     else:
-
-        print("Invalid Choice")
+        print("Invalid Choice.")
