@@ -1,4 +1,4 @@
-# Smart Study Time Tracker
+# StudyPulse
 
 ## About The Project
 
